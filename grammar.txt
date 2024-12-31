@@ -1,0 +1,5 @@
+BNF Notation for Grammar
+
+<expression> ::= <term> | <expression> "+" <term> | <expression> "-" <term>
+<term> ::= <factor> | <term> "*" <factor> | <term> "/" <factor>
+<factor> ::= [0-9]+ | "(" <expression> ")"
