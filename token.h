@@ -13,9 +13,14 @@ typedef enum {
     TOKEN_EOF
 } TokenType;
 
-typedef struct {
+typedef struct Token{
     TokenType type;
     int value;
 } Token;
+
+typedef struct TokenNode {
+    Token token;
+    struct TokenNode* next;
+} TokenNode;
 
 #endif

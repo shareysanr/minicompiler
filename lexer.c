@@ -1,8 +1,13 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "lexer.h"
 
 Lexer* init_lexer(const char* input) {
     Lexer* lexer = (Lexer*)malloc(sizeof(Lexer));
+    if (!lexer){
+        fprintf(stderr, "Error: Memory allocation failed for Lexer\n");
+        exit(EXIT_FAILURE);
+    }
     lexer->input = input;
     lexer->index = 0;
     lexer->current_char = input[0];
@@ -42,50 +47,82 @@ int getNum(Lexer* lexer) {
 
 Token get_next_token(Lexer* lexer) {
     Token token;
-    while (lexer->current_char != '\0') {
-        char cur = lexer->current_char;
-        if (is_space(cur)) {
-            skip_whitespace(lexer);
-            continue;
-        } else if (is_digit(cur)) {
-            int num = getNum(lexer);
-            token.type = TOKEN_NUMBER;
-            token.value = num;
-            return token;
-        } else if (cur == '+') {
-            token.type = TOKEN_PLUS;
-            token.value = 0;
-            iterate(lexer);
-            return token;
-        } else if (cur == '-') {
-            token.type = TOKEN_MIN;
-            token.value = 0;
-            iterate(lexer);
-            return token;
-        } else if (cur == '*') {
-            token.type = TOKEN_MUL;
-            token.value = 0;
-            iterate(lexer);
-            return token;
-        } else if (cur == '/') {
-            token.type = TOKEN_DIV;
-            token.value = 0;
-            iterate(lexer);
-            return token;
-        } else if (cur == '(') {
-            token.type = TOKEN_L_PAREN;
-            token.value = 0;
-            iterate(lexer);
-            return token;
-        } else if (cur == ')') {
-            token.type = TOKEN_R_PAREN;
-            token.value = 0;
-            iterate(lexer);
-            return token;
-        } else {
-            // Error reached
-        }
+    char cur = lexer->current_char;
+    
+    if (is_space(cur)){
+        skip_whitespace(lexer);
     }
-    token.type = TOKEN_EOF;
+
+    if (is_digit(cur)){
+        int num = getNum(lexer);
+        token.type = TOKEN_NUMBER;
+        token.value = num;
+        return token;
+    } else if (cur == '+'){
+        token.type = TOKEN_PLUS;
+    } else if (cur == '-'){
+        token.type = TOKEN_MIN;
+    } else if (cur == '*'){
+        token.type = TOKEN_MUL;
+    } else if (cur == '/'){
+        token.type = TOKEN_DIV;
+    } else if (cur == '('){
+        token.type = TOKEN_L_PAREN;
+    } else if (cur == ')'){
+        token.type = TOKEN_R_PAREN;
+    } else if (cur == '\0'){
+        token.type = TOKEN_EOF;
+    } else {
+        fprintf(stderr, "Error: Unknown character '%c'\n", cur);
+        exit(EXIT_FAILURE);
+    }
+    
+    token.value = 0; // Value for non number tokens
+    iterate(lexer);
     return token;
+}
+
+TokenNode* applyLexer(Lexer* lexer){
+    TokenNode* tokensHead = (TokenNode*) malloc(sizeof(TokenNode));
+    if (!tokensHead){
+        fprintf(stderr, "Error: Memory allocation failed for tokensHead\n");
+        exit(EXIT_FAILURE);
+    }
+    TokenNode* current = tokensHead;
+    TokenNode* nextToken;
+    Token tok;
+
+    while (lexer->current_char != '\0'){
+        tok = get_next_token(lexer);
+        current->token = tok;
+        nextToken = (TokenNode*) malloc(sizeof(TokenNode));
+        if (!nextToken){
+            fprintf(stderr, "Error: Memory allocation failed for nextToken\n");
+            exit(EXIT_FAILURE);
+        }
+        current->next = nextToken;
+        current = nextToken;
+    }
+
+    if (lexer->current_char == '\0') {
+        tok = get_next_token(lexer); // Retrieves EOF token
+        current->token = tok;
+    }
+    
+    current->next = NULL;
+
+    return tokensHead;
+}
+
+void free_tokens(TokenNode* head) {
+    TokenNode* current = head;
+    while (current != NULL) {
+        TokenNode* next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+void free_lexer(Lexer* lexer){
+    free(lexer);
 }
