@@ -2,10 +2,21 @@
 #include <stdlib.h>
 #include "lexer.h"
 
+const char* token_names[] = {
+    "TOKEN_NUMBER",
+    "TOKEN_PLUS",
+    "TOKEN_MIN",
+    "TOKEN_MUL",
+    "TOKEN_DIV",
+    "TOKEN_L_PAREN",
+    "TOKEN_R_PAREN",
+    "TOKEN_EOF"
+};
+
 void print_tokens(TokenNode* head) {
     TokenNode* current = head;
     while (current != NULL) {
-        printf("Token: type=%d", current->token.type);
+        printf("Token: type=%s", token_names[current->token.type]);
         if (current->token.type == TOKEN_NUMBER) {
             printf(", value=%d", current->token.value);
         }

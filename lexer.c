@@ -19,12 +19,6 @@ void iterate(Lexer* lexer) {
     lexer->current_char = lexer->input[lexer->index];
 }
 
-void skip_whitespace(Lexer* lexer) {
-    while (is_space(lexer->current_char)) {
-        iterate(lexer);
-    }
-}
-
 int is_space(char c) {
     return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r');
 }
@@ -32,6 +26,12 @@ int is_space(char c) {
 int is_digit(char c) {
     return (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || 
             c == '5' || c == '6' || c == '7' || c == '8' || c == '9');
+}
+
+void skip_whitespace(Lexer* lexer) {
+    while (is_space(lexer->current_char)) {
+        iterate(lexer);
+    }
 }
 
 int getNum(Lexer* lexer) {
@@ -51,6 +51,7 @@ Token get_next_token(Lexer* lexer) {
     
     if (is_space(cur)){
         skip_whitespace(lexer);
+        cur = lexer->current_char;
     }
 
     if (is_digit(cur)){
