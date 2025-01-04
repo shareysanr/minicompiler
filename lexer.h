@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include "token.h"
 
-typedef struct {
+typedef struct Lexer{
     const char* input;
     size_t index;
     char current_char;
