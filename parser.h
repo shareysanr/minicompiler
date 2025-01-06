@@ -19,6 +19,6 @@ ASTNode* parse_factor(TokenNode** current);
 
 void free_ast(ASTNode*);
 
-
+void print_ast(ASTNode*);
 
 #endif
