@@ -34,11 +34,16 @@ ASTNode* parse_factor(TokenNode** current) {
         return node;
     }
 
-    fprintf(stderr, "Error: Unexpected token in parse_factor\n");
+    fprintf(stderr, "Error: Unexpected token '%s' in parse_factor\n", token_names[(*current)->token.type]);
     exit(EXIT_FAILURE);
 }
 
 ASTNode* parse_term(TokenNode** current) {
+    if ((*current) == NULL) {
+        fprintf(stderr, "Error: NULL value for parse_term\n");
+        exit(EXIT_FAILURE);
+    }
+
     ASTNode* node = parse_factor(current);
 
     while ((*current) != NULL && ((*current)->token.type == TOKEN_MUL || (*current)->token.type == TOKEN_DIV)) {
@@ -58,6 +63,13 @@ ASTNode* parse_expression(TokenNode** current){
 
     while ((*current) != NULL && ((*current)->token.type == TOKEN_PLUS || (*current)->token.type == TOKEN_MIN)) {
         ASTNode* new_node = (ASTNode*)malloc(sizeof(ASTNode));
+
+        if ((*current)->next == NULL || (*current)->next->token.type == TOKEN_EOF) {
+            fprintf(stderr, "Error: Incomplete expression after '%s'\n",
+                    token_names[(*current)->token.type]);
+            exit(EXIT_FAILURE);
+        }
+
         new_node->token = (*current)->token;
         new_node->left = node;
         *current = (*current)->next;

@@ -14,6 +14,17 @@ const char* token_names[] = {
     "TOKEN_EOF"
 };
 
+const char* token_signs[] = {
+    "",
+    "+",
+    "-",
+    "*",
+    "/",
+    "(",
+    ")",
+    "EOF"
+};
+
 void print_tokens(TokenNode* head) {
     TokenNode* current = head;
     while (current != NULL) {
@@ -41,7 +52,9 @@ void print_ast(ASTNode* root) {
 
 int main() {
     const char* input = "123 + 456 * (7 - 8)";
+    //const char* input = "1 + (";
 
+    printf("Input string: \"%s\"\n", input);
     Lexer* lexer = init_lexer(input);
 
     TokenNode* tokens = applyLexer(lexer);
@@ -56,7 +69,7 @@ int main() {
 
     printf("Abstract Syntax Tree:\n\n");
     print_ast(ast_root);
-
+    
     free_ast(ast_root);
     free_tokens(tokens);
     free_lexer(lexer);

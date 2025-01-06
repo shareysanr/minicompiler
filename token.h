@@ -23,4 +23,6 @@ typedef struct TokenNode {
     struct TokenNode* next;
 } TokenNode;
 
+extern const char* token_names[];
+
 #endif

@@ -29,7 +29,7 @@ int is_digit(char c) {
 }
 
 void skip_whitespace(Lexer* lexer) {
-    while (is_space(lexer->current_char)) {
+    while (lexer->current_char != '\0' && is_space(lexer->current_char)) {
         iterate(lexer);
     }
 }
@@ -49,11 +49,6 @@ Token get_next_token(Lexer* lexer) {
     Token token;
     char cur = lexer->current_char;
     
-    if (is_space(cur)){
-        skip_whitespace(lexer);
-        cur = lexer->current_char;
-    }
-
     if (is_digit(cur)){
         int num = getNum(lexer);
         token.type = TOKEN_NUMBER;
@@ -73,6 +68,8 @@ Token get_next_token(Lexer* lexer) {
         token.type = TOKEN_R_PAREN;
     } else if (cur == '\0'){
         token.type = TOKEN_EOF;
+        token.value = 0;
+        return token; // Don't want the lexer to iterate here so return
     } else {
         fprintf(stderr, "Error: Unknown character '%c'\n", cur);
         exit(EXIT_FAILURE);
@@ -93,6 +90,8 @@ TokenNode* applyLexer(Lexer* lexer){
     TokenNode* nextToken;
     Token tok;
 
+    skip_whitespace(lexer); // Skip whitespace once at the start of input
+
     while (lexer->current_char != '\0'){
         tok = get_next_token(lexer);
         current->token = tok;
@@ -103,6 +102,8 @@ TokenNode* applyLexer(Lexer* lexer){
         }
         current->next = nextToken;
         current = nextToken;
+
+        skip_whitespace(lexer); // Skip whitespace once at the end of each token
     }
 
     if (lexer->current_char == '\0') {
