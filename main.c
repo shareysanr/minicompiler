@@ -51,7 +51,61 @@ void print_ast(ASTNode* root) {
     print_ast(root->right);
 }
 
+void print_tree(ASTNode* root, int level) {
+    if (root == NULL) {
+        return;
+    }
+
+    for (int i = 0; i < level; i++) {
+        printf("    ");
+    }
+
+    if (root->token.type == TOKEN_NUMBER) {
+        printf("%d\n", root->token.value);
+    } else {
+        printf("%s\n", token_signs[root->token.type]);
+    }
+
+    print_tree(root->left, level + 1);
+    print_tree(root->right, level + 1);
+}
+
+void compile_multiple(const char* input_list[]) {
+    for (int i = 0; input_list[i] != NULL; i++) {
+        printf("Input string: \"%s\"\n", input_list[i]);
+        Lexer* lexer = init_lexer(input_list[i]);
+
+        TokenNode* tokens = applyLexer(lexer);
+        TokenNode* tokens_passed = tokens;
+
+        printf("\n\nTokens:\n");
+        print_tokens(tokens);
+
+        ASTNode* ast_root = parse_tokens(&tokens_passed);
+
+        printf("\n\nAbstract Syntax Tree:\n");
+        //print_ast(ast_root);
+        print_tree(ast_root, 0);
+
+        int return_value = interpret(ast_root);
+
+        printf("\n\nInterpret AST:\n");
+        printf("Value = '%d'\n", return_value);
+        printf("\n\n\n\n");
+
+        free_ast(ast_root);
+        free_tokens(tokens);
+        free_lexer(lexer);
+    }
+}
+
 int main() {
+    const char* input_list[] = {"  3 + 4 * 2 ", "  10 - 2 - 3 ", " 6  / (2 + 1)  ",
+                                " ((3 + 2) * 4) - (6 / 2)", "((2 + 3) * 4 - 5) / (2 + 3)", NULL};
+
+    compile_multiple(input_list);
+
+    /*
     const char* input = "123 + 456 * (7 - 8)";
     //const char* input = "1 + (";
 
@@ -67,7 +121,8 @@ int main() {
     ASTNode* ast_root = parse_tokens(&tokens_passed);
 
     printf("\n\nAbstract Syntax Tree:\n");
-    print_ast(ast_root);
+    //print_ast(ast_root);
+    print_tree(ast_root, 0);
 
     int return_value = interpret(ast_root);
 
@@ -77,6 +132,7 @@ int main() {
     free_ast(ast_root);
     free_tokens(tokens);
     free_lexer(lexer);
+    */
 
     return 0;
 }
