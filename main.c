@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "lexer.h"
 #include "parser.h"
+#include "interpreter.h"
 
 const char* token_names[] = {
     "TOKEN_NUMBER",
@@ -60,15 +61,18 @@ int main() {
     TokenNode* tokens = applyLexer(lexer);
     TokenNode* tokens_passed = tokens;
 
-    printf("Tokens:\n");
+    printf("\n\nTokens:\n");
     print_tokens(tokens);
-
-    printf("\n\n");
 
     ASTNode* ast_root = parse_tokens(&tokens_passed);
 
-    printf("Abstract Syntax Tree:\n\n");
+    printf("\n\nAbstract Syntax Tree:\n");
     print_ast(ast_root);
+
+    int return_value = interpret(ast_root);
+
+    printf("\n\nInterpret AST:\n");
+    printf("Value ='%d'\n", return_value);
     
     free_ast(ast_root);
     free_tokens(tokens);
