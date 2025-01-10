@@ -34,6 +34,17 @@ ASTNode* parse_factor(TokenNode** current) {
         return node;
     }
 
+    if ((*current)->token.type == TOKEN_MIN) {
+        
+        ASTNode* node = (ASTNode*)malloc(sizeof(ASTNode));
+        node->token = (*current)->token;
+        *current = (*current)->next;
+
+        node->left = parse_factor(current); // Set the left node to the number or expression
+        node->right = NULL;
+        return node;
+    }
+
     fprintf(stderr, "Error: Unexpected token '%s' in parse_factor\n", token_names[(*current)->token.type]);
     exit(EXIT_FAILURE);
 }

@@ -100,9 +100,18 @@ void compile_multiple(const char* input_list[]) {
 }
 
 int main() {
-    const char* input_list[] = {"  3 + 4 * 2 ", "  10 - 2 - 3 ", " 6  / (2 + 1)  ",
-                                " ((3 + 2) * 4) - (6 / 2)", "((2 + 3) * 4 - 5) / (2 + 3)", NULL};
+    //const char* input_list[] = {"  3 + 4 * 2 ", "  10 - 2 - 3 ", " 6  / (2 + 1)  ",
+    //                            " ((3 + 2) * 4) - (6 / 2)", "((2 + 3) * 4 - 5) / (2 + 3)", NULL};
 
+    const char* input_list[] = {
+        "-3",
+        "1 + -3",
+        "-(-3)",
+        "-3 * 4",
+        "(-3 + 4)",
+        "1 + -3 * -2",
+        NULL
+    };
     compile_multiple(input_list);
 
     /*

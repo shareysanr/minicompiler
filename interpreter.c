@@ -15,6 +15,9 @@ int interpret(ASTNode* node) {
     } else if (node->token.type == TOKEN_PLUS) {
         return interpret(node->left) + interpret(node->right);
     } else if (node->token.type == TOKEN_MIN) {
+        if (node->right == NULL) {
+            return -1 * interpret(node->left);
+        }
         return interpret(node->left) - interpret(node->right);
     } else if (node->token.type == TOKEN_MUL) {
         return interpret(node->left) * interpret(node->right);
