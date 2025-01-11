@@ -10,12 +10,17 @@ typedef enum {
     TOKEN_DIV,
     TOKEN_L_PAREN,
     TOKEN_R_PAREN,
+    TOKEN_IDENTIFIER,
+    TOKEN_INT,
+    TOKEN_EQUALS,
+    TOKEN_SEMICOLON,
     TOKEN_EOF
 } TokenType;
 
 typedef struct Token{
     TokenType type;
     int value;
+    char str[32];
 } Token;
 
 typedef struct TokenNode {

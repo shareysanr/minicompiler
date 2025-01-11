@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "lexer.h"
 
 Lexer* init_lexer(const char* input) {
@@ -28,6 +29,26 @@ int is_digit(char c) {
             c == '5' || c == '6' || c == '7' || c == '8' || c == '9');
 }
 
+int is_letter(char c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+int is_alphanumeric(char c) {
+    return is_letter(c) || is_digit(c);
+}
+
+int is_int_keyword(Lexer* lexer) {
+    // Make sure there are at least 3 characters left in the input
+    if (lexer->index + 3 > strlen(lexer->input)) {
+        return 0;
+    }
+
+    return (lexer->current_char == 'i' && lexer->input[lexer->index + 1] == 'n' &&
+            lexer->input[lexer->index + 2] == 't' && (is_space(lexer->input[lexer->index + 3]) || 
+            lexer->input[lexer->index + 3] == '\0' || lexer->input[lexer->index + 3] == ';' || 
+            lexer->input[lexer->index + 3] == '='));
+}
+
 void skip_whitespace(Lexer* lexer) {
     while (lexer->current_char != '\0' && is_space(lexer->current_char)) {
         iterate(lexer);
@@ -54,6 +75,27 @@ Token get_next_token(Lexer* lexer) {
         token.type = TOKEN_NUMBER;
         token.value = num;
         return token;
+    } else if (is_int_keyword(lexer)) {
+        token.type = TOKEN_INT;
+        token.value = 0;
+        iterate(lexer);
+        iterate(lexer);
+        iterate(lexer);
+        return token;
+    } else if (is_letter(cur)) {
+        char varName[32];  // compilers only value the first 31 characters of a variable name
+        int length = 0;
+        token.type = TOKEN_IDENTIFIER;
+
+        while (is_alphanumeric(lexer->current_char) && length < 31) {
+            varName[length] = lexer->current_char;
+            length++;
+            iterate(lexer);
+        }
+        varName[length] = '\0';
+
+        strncpy(token.str, varName, sizeof(token.str));
+        return token;
     } else if (cur == '+'){
         token.type = TOKEN_PLUS;
     } else if (cur == '-'){
@@ -66,6 +108,10 @@ Token get_next_token(Lexer* lexer) {
         token.type = TOKEN_L_PAREN;
     } else if (cur == ')'){
         token.type = TOKEN_R_PAREN;
+    } else if (cur == '='){
+        token.type = TOKEN_EQUALS;
+    } else if (cur == ';'){
+        token.type = TOKEN_SEMICOLON;
     } else if (cur == '\0'){
         token.type = TOKEN_EOF;
         token.value = 0;

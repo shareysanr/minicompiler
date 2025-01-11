@@ -12,6 +12,10 @@ const char* token_names[] = {
     "TOKEN_DIV",
     "TOKEN_L_PAREN",
     "TOKEN_R_PAREN",
+    "TOKEN_IDENTIFIER",
+    "TOKEN_INT",
+    "TOKEN_EQUALS",
+    "TOKEN_SEMICOLON",
     "TOKEN_EOF"
 };
 
@@ -23,6 +27,10 @@ const char* token_signs[] = {
     "/",
     "(",
     ")",
+    "VAR",
+    "INT",
+    "=",
+    ";"
     "EOF"
 };
 
@@ -32,6 +40,8 @@ void print_tokens(TokenNode* head) {
         printf("Token: type=%s", token_names[current->token.type]);
         if (current->token.type == TOKEN_NUMBER) {
             printf(", value=%d", current->token.value);
+        } else if (current->token.type == TOKEN_IDENTIFIER) {
+            printf(", name=%s", current->token.str);
         }
         printf("\n");
         current = current->next;
@@ -68,6 +78,23 @@ void print_tree(ASTNode* root, int level) {
 
     print_tree(root->left, level + 1);
     print_tree(root->right, level + 1);
+}
+
+void lex_multiple(const char* input_list[]) {
+    for (int i = 0; input_list[i] != NULL; i++) {
+        printf("Input string: \"%s\"\n", input_list[i]);
+        Lexer* lexer = init_lexer(input_list[i]);
+
+        TokenNode* tokens = applyLexer(lexer);
+        TokenNode* tokens_passed = tokens;
+
+        printf("\n\nTokens:\n");
+        print_tokens(tokens);
+        printf("\n\n\n\n");
+
+        free_tokens(tokens);
+        free_lexer(lexer);
+    }
 }
 
 void compile_multiple(const char* input_list[]) {
@@ -112,11 +139,22 @@ int main() {
         "1 + -3 * -2",
         NULL
     };
-    compile_multiple(input_list);
+    //compile_multiple(input_list);
 
+    const char* lex_list[] = {
+        "int",
+        "int x;",
+        "int 5 4 3 int x y z int",
+        "inty x y z;",
+        "(-3 + 4)int",
+        "1 + -3 * -2int",
+        NULL
+    };
+
+    lex_multiple(lex_list);
+    //const char* input = "123 + 456 * (7 - 8)";
     /*
-    const char* input = "123 + 456 * (7 - 8)";
-    //const char* input = "1 + (";
+    const char* input = "int x = 5;";
 
     printf("Input string: \"%s\"\n", input);
     Lexer* lexer = init_lexer(input);
@@ -126,7 +164,7 @@ int main() {
 
     printf("\n\nTokens:\n");
     print_tokens(tokens);
-
+    
     ASTNode* ast_root = parse_tokens(&tokens_passed);
 
     printf("\n\nAbstract Syntax Tree:\n");
@@ -139,6 +177,7 @@ int main() {
     printf("Value ='%d'\n", return_value);
     
     free_ast(ast_root);
+
     free_tokens(tokens);
     free_lexer(lexer);
     */
