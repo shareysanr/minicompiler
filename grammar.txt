@@ -1,6 +1,6 @@
 BNF Notation for Grammar
 
-<assignment> ::= "int" <identifier> "=" <expression> | <identifier> "=" <expression>
+<assignment> ::= "int" <identifier> ";" | "int" <identifier> "=" <expression> ";" | <identifier> "=" <expression> ";"
 <expression> ::= <term> | <expression> "+" <term> | <expression> "-" <term>
 <term> ::= <factor> | <term> "*" <factor> | <term> "/" <factor>
-<factor> ::= [0-9]+ | "(" <expression> ")" | "-" <factor>
+<factor> ::= [0-9]+ | "(" <expression> ")" | "-" <factor> | <identifier>

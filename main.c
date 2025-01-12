@@ -97,6 +97,30 @@ void lex_multiple(const char* input_list[]) {
     }
 }
 
+void parse_multiple(const char* input_list[]) {
+    for (int i = 0; input_list[i] != NULL; i++) {
+        printf("Input string: \"%s\"\n", input_list[i]);
+        Lexer* lexer = init_lexer(input_list[i]);
+
+        TokenNode* tokens = applyLexer(lexer);
+        TokenNode* tokens_passed = tokens;
+
+        printf("\n\nTokens:\n");
+        print_tokens(tokens);
+
+        ASTNode* ast_root = parse_tokens(&tokens_passed);
+
+        printf("\n\nAbstract Syntax Tree:\n");
+        //print_ast(ast_root);
+        print_tree(ast_root, 0);
+        printf("\n\n\n\n");
+
+        free_ast(ast_root);
+        free_tokens(tokens);
+        free_lexer(lexer);
+    }
+}
+
 void compile_multiple(const char* input_list[]) {
     for (int i = 0; input_list[i] != NULL; i++) {
         printf("Input string: \"%s\"\n", input_list[i]);
@@ -151,7 +175,16 @@ int main() {
         NULL
     };
 
-    lex_multiple(lex_list);
+    //lex_multiple(lex_list);
+
+    const char* parse_list[] = {
+        "int x;",
+        "int x = 5;",
+        "int x = 5 * 4 + 2;",
+        "int x = 4 + 5 * (9 - 2);",
+        NULL
+    };
+    parse_multiple(parse_list);
     //const char* input = "123 + 456 * (7 - 8)";
     /*
     const char* input = "int x = 5;";

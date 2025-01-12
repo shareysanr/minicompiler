@@ -91,13 +91,81 @@ ASTNode* parse_expression(TokenNode** current){
     return node;
 }
 
+ASTNode* parse_assignment(TokenNode** current) {
+    if ((*current) == NULL) {
+        fprintf(stderr, "Error: NULL value for parse_term\n");
+        exit(EXIT_FAILURE);
+    }
+
+    ASTNode* node = (ASTNode*)malloc(sizeof(ASTNode));
+    node->left = NULL;
+    node->right = NULL;
+    // int x; and int x = 5; cases
+    if ((*current)->token.type == TOKEN_INT) {
+        *current = (*current)->next;
+        if ((*current)->token.type != TOKEN_IDENTIFIER) {
+            fprintf(stderr, "Error: Variable not after keyword int\n");
+            exit(EXIT_FAILURE);
+        }
+
+        node->token = (*current)->token;
+        *current = (*current)->next;
+
+        if ((*current)->token.type == TOKEN_SEMICOLON) {
+            node->left = NULL;
+            node->right = NULL;
+            *current = (*current)->next;
+            return node;
+        } else if ((*current)->token.type == TOKEN_EQUALS) {
+            *current = (*current)->next;
+            node->left = parse_expression(current);
+            node->right = NULL;
+
+            if ((*current)->token.type != TOKEN_SEMICOLON) {
+                fprintf(stderr, "Error: Semicolon not found after expression\n");
+                exit(EXIT_FAILURE);
+            }
+
+            *current = (*current)->next;
+            return node;
+        } else {
+            fprintf(stderr, "Error: Incorrect token found after int \n");
+            exit(EXIT_FAILURE);
+        }
+    } else if ((*current)->token.type == TOKEN_IDENTIFIER) {
+        // x = 5; case
+        node->token = (*current)->token;
+        *current = (*current)->next;
+
+        if ((*current)->token.type == TOKEN_EQUALS) {
+            *current = (*current)->next;
+            node->left = parse_expression(current);
+            node->right = NULL;
+
+            if ((*current)->token.type != TOKEN_SEMICOLON) {
+                fprintf(stderr, "Error: Semicolon not found after expression\n");
+                exit(EXIT_FAILURE);
+            }
+
+            *current = (*current)->next;
+            return node;
+        } else {
+            fprintf(stderr, "Error: Incorrect token found after identifier\n");
+            exit(EXIT_FAILURE);
+        }
+    } else {
+        fprintf(stderr, "Error: Incorrect match for assignment\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
 ASTNode* parse_tokens(TokenNode** tokenHead) {
     if (*tokenHead == NULL) {
         fprintf(stderr, "Error: Token list is empty\n");
         exit(EXIT_FAILURE);
     }
 
-    ASTNode* root = parse_expression(tokenHead);
+    ASTNode* root = parse_assignment(tokenHead);
 
     if (*tokenHead == NULL || (*tokenHead)->token.type != TOKEN_EOF) {
         fprintf(stderr, "Error: Unexpected token after end of expression\n");
