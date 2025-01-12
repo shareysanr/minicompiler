@@ -121,7 +121,7 @@ void parse_multiple(const char* input_list[]) {
     }
 }
 
-void compile_multiple(const char* input_list[]) {
+void interpret_multiple(const char* input_list[]) {
     for (int i = 0; input_list[i] != NULL; i++) {
         printf("Input string: \"%s\"\n", input_list[i]);
         Lexer* lexer = init_lexer(input_list[i]);
@@ -154,17 +154,6 @@ int main() {
     //const char* input_list[] = {"  3 + 4 * 2 ", "  10 - 2 - 3 ", " 6  / (2 + 1)  ",
     //                            " ((3 + 2) * 4) - (6 / 2)", "((2 + 3) * 4 - 5) / (2 + 3)", NULL};
 
-    const char* input_list[] = {
-        "-3",
-        "1 + -3",
-        "-(-3)",
-        "-3 * 4",
-        "(-3 + 4)",
-        "1 + -3 * -2",
-        NULL
-    };
-    //compile_multiple(input_list);
-
     const char* lex_list[] = {
         "int",
         "int x;",
@@ -184,7 +173,18 @@ int main() {
         "int x = 4 + 5 * (9 - 2);",
         NULL
     };
-    parse_multiple(parse_list);
+    //parse_multiple(parse_list);
+
+    const char* interpret_list[] = {
+        "int x;",
+        "int y = 5;",
+        "int z = 5 + 2;",
+        "int abcd = 5 + 2 * 5;",
+        "int efgh = 5 + 2 * (2 - 1);",
+        NULL
+    };
+    interpret_multiple(interpret_list);
+
     //const char* input = "123 + 456 * (7 - 8)";
     /*
     const char* input = "int x = 5;";
