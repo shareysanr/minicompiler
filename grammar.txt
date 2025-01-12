@@ -1,5 +1,7 @@
 BNF Notation for Grammar
 
+<program> ::= <statements> | <expression>
+<statements> ::= <assignment> | <statements> <assignment>
 <assignment> ::= "int" <identifier> ";" | "int" <identifier> "=" <expression> ";" | <identifier> "=" <expression> ";"
 <expression> ::= <term> | <expression> "+" <term> | <expression> "-" <term>
 <term> ::= <factor> | <term> "*" <factor> | <term> "/" <factor>
