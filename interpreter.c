@@ -31,6 +31,21 @@ int get_variable_index(const char* name) {
     return variable_count - 1;
 }
 
+int get_variable_count() {
+    return variable_count;
+}
+
+Variable* get_variable_table() {
+    return variable_table;
+}
+
+void print_variable_table() {
+    printf("Variable Table:\n");
+    for (int i = 0; i < variable_count; i++) {
+        printf("%s = %d\n", variable_table[i].name, variable_table[i].value);
+    }
+}
+
 int exists(const char* name) {
     for (int i = 0; i < variable_count; i++) {
         if (strcmp(variable_table[i].name, name) == 0) {
@@ -85,3 +100,15 @@ int interpret(ASTNode* node) {
     exit(EXIT_FAILURE);
 }
 
+void interpret_program(ASTNode* node) {
+    if (node == NULL) {
+        return;
+    }
+
+    if (node->token.type == TOKEN_STATEMENTS) {
+        interpret(node->left);
+        interpret_program(node->right);
+    } else {
+        interpret(node);
+    }
+}

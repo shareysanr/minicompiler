@@ -154,6 +154,35 @@ void interpret_multiple(const char* input_list[]) {
     }
 }
 
+void interpret_block(const char* input) {
+    printf("Input string: \"%s\"\n", input);
+    Lexer* lexer = init_lexer(input);
+
+    TokenNode* tokens = applyLexer(lexer);
+    TokenNode* tokens_passed = tokens;
+
+    printf("\n\nTokens:\n");
+    print_tokens(tokens);
+
+    ASTNode* ast_root = parse_tokens(&tokens_passed);
+
+    printf("\n\nAbstract Syntax Tree:\n");
+    //print_ast(ast_root);
+    print_tree(ast_root, 0);
+
+    //int return_value = interpret(ast_root);
+    interpret_program(ast_root);
+
+    printf("\n\nInterpret AST:\n");
+    //printf("Value = '%d'\n", return_value);
+    print_variable_table();
+    printf("\n\n\n\n");
+
+    free_ast(ast_root);
+    free_tokens(tokens);
+    free_lexer(lexer);
+}
+
 int main() {
     //const char* input_list[] = {"  3 + 4 * 2 ", "  10 - 2 - 3 ", " 6  / (2 + 1)  ",
     //                            " ((3 + 2) * 4) - (6 / 2)", "((2 + 3) * 4 - 5) / (2 + 3)", NULL};
@@ -177,7 +206,7 @@ int main() {
         "int x = 4 + 5 * (9 - 2); x = x + 2;",
         NULL
     };
-    parse_multiple(parse_list);
+    //parse_multiple(parse_list);
 
     const char* interpret_list[] = {
         "int x;",
@@ -189,6 +218,9 @@ int main() {
     };
     //interpret_multiple(interpret_list);
 
+
+    const char* input = "int x; int y; x = 5; y = 2; x = x + 5;";
+    interpret_block(input);
     //const char* input = "123 + 456 * (7 - 8)";
     /*
     const char* input = "int x = 5;";
