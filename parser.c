@@ -35,12 +35,21 @@ ASTNode* parse_factor(TokenNode** current) {
     }
 
     if ((*current)->token.type == TOKEN_MIN) {
-        
         ASTNode* node = (ASTNode*)malloc(sizeof(ASTNode));
         node->token = (*current)->token;
         *current = (*current)->next;
 
         node->left = parse_factor(current); // Set the left node to the number or expression
+        node->right = NULL;
+        return node;
+    }
+
+    if ((*current)->token.type == TOKEN_IDENTIFIER) {
+        ASTNode* node = (ASTNode*)malloc(sizeof(ASTNode));
+        node->token = (*current)->token;
+        *current = (*current)->next;
+
+        node->left = NULL;
         node->right = NULL;
         return node;
     }
@@ -139,6 +148,7 @@ ASTNode* parse_assignment(TokenNode** current) {
 
         if ((*current)->token.type == TOKEN_EQUALS) {
             *current = (*current)->next;
+            
             node->left = parse_expression(current);
             node->right = NULL;
 
@@ -159,13 +169,45 @@ ASTNode* parse_assignment(TokenNode** current) {
     }
 }
 
+ASTNode* parse_statements(TokenNode** current) {
+    if ((*current) == NULL) {
+        fprintf(stderr, "Error: NULL value for parse_statements\n");
+        exit(EXIT_FAILURE);
+    }
+
+    ASTNode* node = parse_assignment(current);
+
+    if (*current != NULL && (*current)->token.type != TOKEN_EOF) {
+        ASTNode* new_node = (ASTNode*)malloc(sizeof(ASTNode));
+        new_node->token.type = TOKEN_STATEMENTS;
+        new_node->left = node;
+        new_node->right = parse_statements(current);
+        return new_node;
+    }
+    
+    return node;
+}
+
+ASTNode* parse_program(TokenNode** current) {
+    if ((*current) == NULL) {
+        fprintf(stderr, "Error: NULL value for parse_program\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if ((*current)->token.type == TOKEN_INT || (*current)->token.type == TOKEN_IDENTIFIER) {
+        return parse_statements(current);
+    } else {
+        return parse_expression(current);
+    }
+}
+
 ASTNode* parse_tokens(TokenNode** tokenHead) {
     if (*tokenHead == NULL) {
         fprintf(stderr, "Error: Token list is empty\n");
         exit(EXIT_FAILURE);
     }
 
-    ASTNode* root = parse_assignment(tokenHead);
+    ASTNode* root = parse_program(tokenHead);
 
     if (*tokenHead == NULL || (*tokenHead)->token.type != TOKEN_EOF) {
         fprintf(stderr, "Error: Unexpected token after end of expression\n");

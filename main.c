@@ -16,6 +16,7 @@ const char* token_names[] = {
     "TOKEN_INT",
     "TOKEN_EQUALS",
     "TOKEN_SEMICOLON",
+    "TOKEN_STATEMENTS",
     "TOKEN_EOF"
 };
 
@@ -30,7 +31,8 @@ const char* token_signs[] = {
     "VAR",
     "INT",
     "=",
-    ";"
+    ";",
+    "SMTS",
     "EOF"
 };
 
@@ -72,6 +74,8 @@ void print_tree(ASTNode* root, int level) {
 
     if (root->token.type == TOKEN_NUMBER) {
         printf("%d\n", root->token.value);
+    } else if (root->token.type == TOKEN_IDENTIFIER) {
+        printf("V %s\n", root->token.str);
     } else {
         printf("%s\n", token_signs[root->token.type]);
     }
@@ -167,13 +171,13 @@ int main() {
     //lex_multiple(lex_list);
 
     const char* parse_list[] = {
-        "int x;",
-        "int x = 5;",
-        "int x = 5 * 4 + 2;",
-        "int x = 4 + 5 * (9 - 2);",
+        "int x; int y;",
+        "int x;\n x = 5;\n x = x + 5;",
+        "int x = 5; x = 5 * 4 + 2;",
+        "int x = 4 + 5 * (9 - 2); x = x + 2;",
         NULL
     };
-    //parse_multiple(parse_list);
+    parse_multiple(parse_list);
 
     const char* interpret_list[] = {
         "int x;",
@@ -183,7 +187,7 @@ int main() {
         "int efgh = 5 + 2 * (2 - 1);",
         NULL
     };
-    interpret_multiple(interpret_list);
+    //interpret_multiple(interpret_list);
 
     //const char* input = "123 + 456 * (7 - 8)";
     /*
