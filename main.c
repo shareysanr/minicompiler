@@ -12,8 +12,12 @@ const char* token_names[] = {
     "TOKEN_DIV",
     "TOKEN_L_PAREN",
     "TOKEN_R_PAREN",
+    "TOKEN_L_BRACE",
+    "TOKEN_R_BRACE",
     "TOKEN_IDENTIFIER",
     "TOKEN_INT",
+    "TOKEN_IF",
+    "TOKEN_ELSE",
     "TOKEN_EQUALS",
     "TOKEN_SEMICOLON",
     "TOKEN_STATEMENTS",
@@ -28,8 +32,12 @@ const char* token_signs[] = {
     "/",
     "(",
     ")",
+    "{",
+    "}",
     "VAR",
     "INT",
+    "IF",
+    "ELSE",
     "=",
     ";",
     "SMTS",
@@ -188,9 +196,9 @@ int main() {
     //                            " ((3 + 2) * 4) - (6 / 2)", "((2 + 3) * 4 - 5) / (2 + 3)", NULL};
 
     const char* lex_list[] = {
-        "int",
-        "int x;",
-        "int 5 4 3 int x y z int",
+        "if ( 3+ 5) { int x = x + 5;}",
+        "else",
+        "ifint;if(else)34;+if",
         "inty x y z;",
         "(-3 + 4)int",
         "1 + -3 * -2int",
@@ -200,13 +208,13 @@ int main() {
     //lex_multiple(lex_list);
 
     const char* parse_list[] = {
-        "int x; int y;",
+        "if (3 + 5) {int x = x + 5;}",
         "int x;\n x = 5;\n x = x + 5;",
         "int x = 5; x = 5 * 4 + 2;",
         "int x = 4 + 5 * (9 - 2); x = x + 2;",
         NULL
     };
-    //parse_multiple(parse_list);
+    parse_multiple(parse_list);
 
     const char* interpret_list[] = {
         "int x;",
@@ -220,7 +228,9 @@ int main() {
 
 
     const char* input = "int x; int y; x = 5; y = 2; x = x + 5;";
-    interpret_block(input);
+    //interpret_block(input);
+
+
     //const char* input = "123 + 456 * (7 - 8)";
     /*
     const char* input = "int x = 5;";

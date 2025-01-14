@@ -49,6 +49,27 @@ int is_int_keyword(Lexer* lexer) {
             lexer->input[lexer->index + 3] == '='));
 }
 
+int is_if_keyword(Lexer* lexer) {
+    // Make sure there are at least 2 characters left in the input
+    if (lexer->index + 2 > strlen(lexer->input)) {
+        return 0;
+    }
+
+    return (lexer->current_char == 'i' && lexer->input[lexer->index + 1] == 'f' && 
+            (!is_alphanumeric(lexer->input[lexer->index + 2])));
+}
+
+int is_else_keyword(Lexer* lexer) {
+    // Make sure there are at least 4 characters left in the input
+    if (lexer->index + 4 > strlen(lexer->input)) {
+        return 0;
+    }
+
+    return (lexer->current_char == 'e' && lexer->input[lexer->index + 1] == 'l' && 
+            lexer->input[lexer->index + 2] == 's' && lexer->input[lexer->index + 3] == 'e' &&
+            (!is_alphanumeric(lexer->input[lexer->index + 4])));
+}
+
 void skip_whitespace(Lexer* lexer) {
     while (lexer->current_char != '\0' && is_space(lexer->current_char)) {
         iterate(lexer);
@@ -78,9 +99,23 @@ Token get_next_token(Lexer* lexer) {
     } else if (is_int_keyword(lexer)) {
         token.type = TOKEN_INT;
         token.value = 0;
-        iterate(lexer);
-        iterate(lexer);
-        iterate(lexer);
+        for (int i = 0; i < 3; i++) {
+            iterate(lexer);
+        }
+        return token;
+    } else if (is_if_keyword(lexer)) {
+        token.type = TOKEN_IF;
+        token.value = 0;
+        for (int i = 0; i < 2; i++) {
+            iterate(lexer);
+        }
+        return token;
+    } else if (is_else_keyword(lexer)) {
+        token.type = TOKEN_ELSE;
+        token.value = 0;
+        for (int i = 0; i < 4; i++) {
+            iterate(lexer);
+        }
         return token;
     } else if (is_letter(cur)) {
         char varName[32];  // compilers only value the first 31 characters of a variable name
@@ -108,6 +143,10 @@ Token get_next_token(Lexer* lexer) {
         token.type = TOKEN_L_PAREN;
     } else if (cur == ')'){
         token.type = TOKEN_R_PAREN;
+    } else if (cur == '{'){
+        token.type = TOKEN_L_BRACE;
+    } else if (cur == '}'){
+        token.type = TOKEN_R_BRACE;
     } else if (cur == '='){
         token.type = TOKEN_EQUALS;
     } else if (cur == ';'){

@@ -169,13 +169,53 @@ ASTNode* parse_assignment(TokenNode** current) {
     }
 }
 
+ASTNode* parse_if_else(TokenNode** current) {
+    // 
+    if ((*current) == NULL) {
+        fprintf(stderr, "Error: NULL value for parse_if_else\n");
+        exit(EXIT_FAILURE);
+    }
+    if ((*current)->token.type != TOKEN_IF && (*current)->next->token.type != TOKEN_L_PAREN) {
+        fprintf(stderr, "Error: IF and ( tokens not found\n");
+        exit(EXIT_FAILURE);
+    }
+    ASTNode* node = (ASTNode*)malloc(sizeof(ASTNode));
+
+    *current = (*current)->next; // Move past if
+    *current = (*current)->next; // Move past (
+    node->left = parse_expression(current); 
+
+    if ((*current)->token.type != TOKEN_R_PAREN && (*current)->next
+        && (*current)->next->token.type != TOKEN_L_BRACE) {
+        fprintf(stderr, "Error: ) and { tokens not found\n");
+        exit(EXIT_FAILURE);
+    }
+
+    *current = (*current)->next; // Move past )
+    *current = (*current)->next; // Move past {
+
+    node->left->left = parse_statements(current);
+
+    if ((*current) == NULL || (*current)->token.type != TOKEN_R_BRACE) {
+        fprintf(stderr, "Error: NULL or R_BRACE not found in if\n");
+        exit(EXIT_FAILURE);
+    }
+
+    *current = (*current)->next; // Move past }
+    return node;
+}
+
 ASTNode* parse_statements(TokenNode** current) {
     if ((*current) == NULL) {
         fprintf(stderr, "Error: NULL value for parse_statements\n");
         exit(EXIT_FAILURE);
     }
-
-    ASTNode* node = parse_assignment(current);
+    ASTNode* node;
+    if ((*current)->token.type == TOKEN_IF) {
+        node = parse_if_else(current);
+    } else {
+        node = parse_assignment(current);
+    }
 
     if (*current != NULL && (*current)->token.type != TOKEN_EOF) {
         ASTNode* new_node = (ASTNode*)malloc(sizeof(ASTNode));

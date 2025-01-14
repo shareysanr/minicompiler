@@ -1,8 +1,12 @@
 BNF Notation for Grammar
 
 <program> ::= <statements> | <expression>
-<statements> ::= <assignment> | <statements> <assignment>
+<statements> ::= <statement> | <statements> <statement>
+<statement> ::= <assignment> | <if_else>
+<if_else> ::= "if" "(" <expression> ")" "{" <statements> "}" | 
+              "if" "(" <expression> ")" "{" <statements> "}" "else" "{" <statements> "}"
 <assignment> ::= "int" <identifier> ";" | "int" <identifier> "=" <expression> ";" | <identifier> "=" <expression> ";"
 <expression> ::= <term> | <expression> "+" <term> | <expression> "-" <term>
 <term> ::= <factor> | <term> "*" <factor> | <term> "/" <factor>
 <factor> ::= [0-9]+ | "(" <expression> ")" | "-" <factor> | <identifier>
+<identifier> ::= [a-zA-Z][a-zA-Z0-9_]*
