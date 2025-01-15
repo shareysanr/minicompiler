@@ -215,21 +215,17 @@ int main() {
         //"int x = 4 + 5 * (9 - 2); x = x + 2;",
         NULL
     };
-    parse_multiple(parse_list);
+    //parse_multiple(parse_list);
 
     const char* interpret_list[] = {
-        "int x;",
-        "int y = 5;",
-        "int z = 5 + 2;",
-        "int abcd = 5 + 2 * 5;",
-        "int efgh = 5 + 2 * (2 - 1);",
+        "if (3 + 5) {int x = x + 5; int y = y + 3;} else { int a = a + 1; int c = c + 2;} int z = z + 7;",
         NULL
     };
-    //interpret_multiple(interpret_list);
+    //interpret_multiple(interpret_list); // Only expressions or one assignment
 
 
-    const char* input = "int x; int y; x = 5; y = 2; x = x + 5;";
-    //interpret_block(input);
+    const char* input = "if (5 + -5) {int x = x + 5; int y = y + 3;} else { int a = a + 1; int c = c + 2;} int z = z + 7;";
+    interpret_block(input);
 
 
     //const char* input = "123 + 456 * (7 - 8)";

@@ -94,6 +94,14 @@ int interpret(ASTNode* node) {
             exit(EXIT_FAILURE);
         }
         return interpret(node->left) / right_value;
+    } else if (node->token.type == TOKEN_IF_ELSE) {
+        int condition = interpret(node->left->left);
+        if (condition) {
+            interpret_program(node->left->right);
+        } else if (node->right->left) {
+            interpret_program(node->right->left);
+        }
+        return 0; // Arbitrary irrelevant value
     }
 
     fprintf(stderr, "Error: Unknown token type '%s'\n", token_names[node->token.type]);
@@ -104,7 +112,7 @@ void interpret_program(ASTNode* node) {
     if (node == NULL) {
         return;
     }
-
+    //printf("%s\n", token_names[node->token.type]);
     if (node->token.type == TOKEN_STATEMENTS) {
         interpret(node->left);
         interpret_program(node->right);
