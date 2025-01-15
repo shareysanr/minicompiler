@@ -18,6 +18,7 @@ const char* token_names[] = {
     "TOKEN_INT",
     "TOKEN_IF",
     "TOKEN_ELSE",
+    "TOKEN_IF_ELSE",
     "TOKEN_EQUALS",
     "TOKEN_SEMICOLON",
     "TOKEN_STATEMENTS",
@@ -38,6 +39,7 @@ const char* token_signs[] = {
     "INT",
     "IF",
     "ELSE",
+    "IF_ELSE",
     "=",
     ";",
     "SMTS",
@@ -204,14 +206,13 @@ int main() {
         "1 + -3 * -2int",
         NULL
     };
-
     //lex_multiple(lex_list);
 
     const char* parse_list[] = {
-        "if (3 + 5) {int x = x + 5;}",
-        "int x;\n x = 5;\n x = x + 5;",
-        "int x = 5; x = 5 * 4 + 2;",
-        "int x = 4 + 5 * (9 - 2); x = x + 2;",
+        "if (3 + 5) {int x = x + 5; int y = y + 3;} int z = z + 7;",
+        //"int x;\n x = 5;\n x = x + 5;",
+        //"int x = 5; x = 5 * 4 + 2;",
+        //"int x = 4 + 5 * (9 - 2); x = x + 2;",
         NULL
     };
     parse_multiple(parse_list);

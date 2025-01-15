@@ -16,6 +16,7 @@ typedef enum {
     TOKEN_INT,
     TOKEN_IF,
     TOKEN_ELSE,
+    TOKEN_IF_ELSE,
     TOKEN_EQUALS,
     TOKEN_SEMICOLON,
     TOKEN_STATEMENTS,
