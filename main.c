@@ -209,7 +209,7 @@ int main() {
     //lex_multiple(lex_list);
 
     const char* parse_list[] = {
-        "if (3 + 5) {int x = x + 5; int y = y + 3;} int z = z + 7;",
+        "if (3 + 5) {int x = x + 5; int y = y + 3;} else { int a = a + 1; int c = c + 2;} int z = z + 7;",
         //"int x;\n x = 5;\n x = x + 5;",
         //"int x = 5; x = 5 * 4 + 2;",
         //"int x = 4 + 5 * (9 - 2); x = x + 2;",
