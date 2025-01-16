@@ -274,7 +274,8 @@ ASTNode* parse_program(TokenNode** current) {
         exit(EXIT_FAILURE);
     }
 
-    if ((*current)->token.type == TOKEN_INT || (*current)->token.type == TOKEN_IDENTIFIER
+    if ((*current)->token.type == TOKEN_INT || ((*current)->token.type == TOKEN_IDENTIFIER
+        && (*current)->next && (*current)->next->token.type == TOKEN_EQUALS) 
         || (*current)->token.type == TOKEN_IF) {
         return parse_statements(current);
     } else {

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "lexer.h"
 #include "parser.h"
 #include "interpreter.h"
@@ -193,6 +194,46 @@ void interpret_block(const char* input) {
     free_lexer(lexer);
 }
 
+void repl() {
+    char input[256];
+    printf("QuickC REPL - Type 'exit' to quit\n");
+    while (1) {
+        printf(">>> ");
+        if (!fgets(input, 256, stdin)) {
+            break;;
+        }
+        size_t len = strlen(input);
+
+        if (len > 0 && input[len - 1] == '\n') {
+            input[len - 1] = '\0';
+        }
+
+        len = strlen(input);
+        
+        if (strcmp(input, "exit") == 0) {
+            break;
+        }
+        if (strlen(input) == 0) {
+            continue;
+        }
+
+
+        //printf("%s\n", input);
+
+        Lexer* lexer = init_lexer(input);
+
+        TokenNode* tokens = applyLexer(lexer);
+        TokenNode* tokens_passed = tokens;
+
+        ASTNode* ast_root = parse_tokens(&tokens_passed);
+
+        int result = interpret(ast_root);
+        if (result != -99999) {
+            printf("%d\n", result);
+        }
+    }
+}
+
 int main() {
     //const char* input_list[] = {"  3 + 4 * 2 ", "  10 - 2 - 3 ", " 6  / (2 + 1)  ",
     //                            " ((3 + 2) * 4) - (6 / 2)", "((2 + 3) * 4 - 5) / (2 + 3)", NULL};
@@ -225,8 +266,8 @@ int main() {
 
 
     const char* input = "if (5 + -5) {int x = x + 5; int y = y + 3;} else { int a = a + 1; int c = c + 2;} int z = z + 7;";
-    interpret_block(input);
-
+    //interpret_block(input);
+    repl();
 
     //const char* input = "123 + 456 * (7 - 8)";
     /*

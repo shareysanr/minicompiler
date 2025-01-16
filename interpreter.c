@@ -70,10 +70,12 @@ int interpret(ASTNode* node) {
             // Case where variable needs to be set to a value
             int value = interpret(node->left);
             variable_table[index].value = value;
-            return value;
+            //return value;
+            return -99999;
         } else {
             if (!variable_exists) {
                 variable_table[index].value = 0; // Case of initializion with no assignment ("int x;")
+                return -99999;
             }
             // Case where variable is already initialized and is on RHS for substitution
             return variable_table[index].value;
@@ -101,7 +103,7 @@ int interpret(ASTNode* node) {
         } else if (node->right->left) {
             interpret_program(node->right->left);
         }
-        return 0; // Arbitrary irrelevant value
+        return -99999;
     }
 
     fprintf(stderr, "Error: Unknown token type '%s'\n", token_names[node->token.type]);
@@ -112,7 +114,7 @@ void interpret_program(ASTNode* node) {
     if (node == NULL) {
         return;
     }
-    //printf("%s\n", token_names[node->token.type]);
+    
     if (node->token.type == TOKEN_STATEMENTS) {
         interpret(node->left);
         interpret_program(node->right);
