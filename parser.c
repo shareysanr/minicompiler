@@ -299,6 +299,49 @@ ASTNode* parse_tokens(TokenNode** tokenHead) {
     return root;
 }
 
+void constant_folding(ASTNode* node) {
+    if (node == NULL) {
+        return;
+    }
+
+    constant_folding(node->left);
+    constant_folding(node->right);
+
+    if ((node->token.type == TOKEN_PLUS || node->token.type == TOKEN_MIN ||
+         node->token.type == TOKEN_MUL || node->token.type == TOKEN_DIV) &&
+        node->left && node->right && node->left->token.type == TOKEN_NUMBER &&
+        node->right->token.type == TOKEN_NUMBER) {
+            
+        int left_val = node->left->token.value;
+        int right_val = node->right->token.value;
+        int result;
+
+        if (node->token.type == TOKEN_PLUS) {
+            result = left_val + right_val;
+        } else if (node->token.type == TOKEN_MIN) {
+            result = left_val - right_val;
+        } else if (node->token.type == TOKEN_MUL) {
+            result = left_val * right_val;
+        } else if (node->token.type == TOKEN_DIV) {
+            if (right_val == 0) {
+                fprintf(stderr, "Error: Dividing by zero in constant folding\n");
+                exit(EXIT_FAILURE);
+            }
+            result = left_val / right_val;
+        }
+
+        node->token.type = TOKEN_NUMBER;
+        node->token.value = result;
+
+        // Free left and right nodes
+        free_ast(node->left);
+        free_ast(node->right);
+        
+        node->left = NULL;
+        node->right = NULL;
+    }
+}
+
 void free_ast(ASTNode* root) {
     if (root == NULL) {
         return;

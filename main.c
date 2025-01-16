@@ -196,8 +196,11 @@ void interpret_block(const char* input) {
 
 void repl() {
     char input[256];
-    printf("QuickC REPL - Type 'exit' to quit\n");
+    printf("QuickC REPL - Type 'cf <code>, 'dce <code>, or 'cf dce <code>' to view optimization, 'exit' to quit\n");
     while (1) {
+        int cf = 0;
+        int dce = 0;
+        char* code;
         printf(">>> ");
         if (!fgets(input, 256, stdin)) {
             break;;
@@ -217,15 +220,48 @@ void repl() {
             continue;
         }
 
+        code = input;
 
-        //printf("%s\n", input);
+        if (strncmp(input, "cf ", 3) == 0) {
+            cf = 1;
+            code = code + 3;
+        }
 
-        Lexer* lexer = init_lexer(input);
+        if (strncmp(input, "dce ", 4) == 0) {
+            dce = 1;
+            code = code + 4;
+        }
+
+        Lexer* lexer = init_lexer(code);
 
         TokenNode* tokens = applyLexer(lexer);
         TokenNode* tokens_passed = tokens;
 
         ASTNode* ast_root = parse_tokens(&tokens_passed);
+
+        if (cf && dce) {
+            printf("\nBEFORE CONSTANT FOLDING AND DEAD CODE ELIMINATION\n");
+            print_tree(ast_root, 0);
+            constant_folding(ast_root);
+            // dead_code_elim(ast_root); To be implemented
+            printf("\nAFTER CONSTANT FOLDING AND DEAD CODE ELIMINATION\n");
+            print_tree(ast_root, 0);
+            printf("\n\n");
+        } else if (cf && !dce) {
+            printf("\nBEFORE CONSTANT FOLDING\n");
+            print_tree(ast_root, 0);
+            constant_folding(ast_root);
+            printf("\nAFTER CONSTANT FOLDING\n");
+            print_tree(ast_root, 0);
+            printf("\n\n");
+        } else if (!cf && dce) {
+            printf("\nBEFORE DEAD CODE ELIMINATION\n");
+            print_tree(ast_root, 0);
+            // dead_code_elim(ast_root); To be implemented
+            printf("\nAFTER DEAD CODE ELIMINATION\n");
+            print_tree(ast_root, 0);
+            printf("\n\n");
+        }
 
         int result = interpret(ast_root);
         if (result != -99999) {
@@ -267,37 +303,9 @@ int main() {
 
     const char* input = "if (5 + -5) {int x = x + 5; int y = y + 3;} else { int a = a + 1; int c = c + 2;} int z = z + 7;";
     //interpret_block(input);
+
+
     repl();
-
-    //const char* input = "123 + 456 * (7 - 8)";
-    /*
-    const char* input = "int x = 5;";
-
-    printf("Input string: \"%s\"\n", input);
-    Lexer* lexer = init_lexer(input);
-
-    TokenNode* tokens = applyLexer(lexer);
-    TokenNode* tokens_passed = tokens;
-
-    printf("\n\nTokens:\n");
-    print_tokens(tokens);
-    
-    ASTNode* ast_root = parse_tokens(&tokens_passed);
-
-    printf("\n\nAbstract Syntax Tree:\n");
-    //print_ast(ast_root);
-    print_tree(ast_root, 0);
-
-    int return_value = interpret(ast_root);
-
-    printf("\n\nInterpret AST:\n");
-    printf("Value ='%d'\n", return_value);
-    
-    free_ast(ast_root);
-
-    free_tokens(tokens);
-    free_lexer(lexer);
-    */
 
     return 0;
 }

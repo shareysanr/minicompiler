@@ -23,6 +23,8 @@ ASTNode* parse_term(TokenNode** current);
 
 ASTNode* parse_factor(TokenNode** current);
 
+void constant_folding(ASTNode* node);
+
 void free_ast(ASTNode* root);
 
 #endif
