@@ -171,12 +171,14 @@ ASTNode* parse_assignment(TokenNode** current) {
 
 /*
 Structure of if else in the AST:
-The if node will be the root of the if_else subtree. The left node of the if node will be the
-expression that will be evaluated to see whether the if statements or the else statements
-are evaluated. The right node will be a STATEMENTS node, with the left node being the
-statements that
-    if
-cond   
+The if_else node will be the root node of the if else expression. The left node will be the if
+node, and the right node will be the else node. The left node of the if node will be the expression
+to be evaluated, and the right node of the if node will be the statements to be executed if the
+expression is true. The left node of the else statement will be the statements to be executed if
+the expression is false.
+                           if_else
+            if                                  else
+expression      if_statements   else_statements      NULL
 */
 ASTNode* parse_if_else(TokenNode** current) {
     if ((*current) == NULL) {
@@ -340,6 +342,34 @@ void constant_folding(ASTNode* node) {
         node->left = NULL;
         node->right = NULL;
     }
+}
+
+ASTNode* dead_code_elim(ASTNode* node) {
+    if (node == NULL) {
+        return NULL;
+    }
+    
+    // Retrieve the node of the statements and replace the if_else node with it if applicable
+    if (node->token.type == TOKEN_IF_ELSE && node->left->left->token.type == TOKEN_NUMBER) {
+        if (node->left->left->token.value != 0) {
+            ASTNode* smts = node->left->right;
+            free_ast(node->right);
+            free_ast(node->left->left);
+            free(node->left);
+            free(node);
+            return smts;
+        } else {
+            ASTNode* smts = node->right->left;
+            free_ast(node->left);
+            free(node->right);
+            free(node);
+            return smts;
+        }
+    }
+
+    node->left = dead_code_elim(node->left);
+    node->right = dead_code_elim(node->right);
+    return node;
 }
 
 void free_ast(ASTNode* root) {

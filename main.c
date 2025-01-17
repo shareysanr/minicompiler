@@ -222,12 +222,12 @@ void repl() {
 
         code = input;
 
-        if (strncmp(input, "cf ", 3) == 0) {
+        if (strncmp(code, "cf ", 3) == 0) {
             cf = 1;
             code = code + 3;
-        }
-
-        if (strncmp(input, "dce ", 4) == 0) {
+        } 
+        
+        if (strncmp(code, "dce ", 4) == 0) {
             dce = 1;
             code = code + 4;
         }
@@ -243,7 +243,7 @@ void repl() {
             printf("\nBEFORE CONSTANT FOLDING AND DEAD CODE ELIMINATION\n");
             print_tree(ast_root, 0);
             constant_folding(ast_root);
-            // dead_code_elim(ast_root); To be implemented
+            ast_root = dead_code_elim(ast_root);
             printf("\nAFTER CONSTANT FOLDING AND DEAD CODE ELIMINATION\n");
             print_tree(ast_root, 0);
             printf("\n\n");
@@ -257,7 +257,7 @@ void repl() {
         } else if (!cf && dce) {
             printf("\nBEFORE DEAD CODE ELIMINATION\n");
             print_tree(ast_root, 0);
-            // dead_code_elim(ast_root); To be implemented
+            ast_root = dead_code_elim(ast_root);
             printf("\nAFTER DEAD CODE ELIMINATION\n");
             print_tree(ast_root, 0);
             printf("\n\n");
