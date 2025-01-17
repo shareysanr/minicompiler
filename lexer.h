@@ -12,8 +12,6 @@ typedef struct Lexer{
 
 Lexer* init_lexer(const char* input);
 
-Token get_next_token(Lexer* lexer);
-
 TokenNode* applyLexer(Lexer* lexer);
 
 void free_tokens(TokenNode* head);

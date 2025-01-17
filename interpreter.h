@@ -10,13 +10,10 @@ typedef struct Variable{
     int value;
 } Variable;
 
-void init_table();
-int get_variable_index(const char* name);
-int get_variable_count();
-Variable* get_variable_table();
 void print_variable_table();
-int exists(const char* name);
+
 int interpret(ASTNode* node);
+
 void interpret_program(ASTNode* node);
 
 

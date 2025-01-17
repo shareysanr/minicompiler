@@ -11,18 +11,6 @@ typedef struct ASTNode {
 
 ASTNode* parse_tokens(TokenNode** tokenHead);
 
-ASTNode* parse_program(TokenNode** current);
-
-ASTNode* parse_statements(TokenNode** current);
-
-ASTNode* parse_assignment(TokenNode** current);
-
-ASTNode* parse_expression(TokenNode** current);
-
-ASTNode* parse_term(TokenNode** current);
-
-ASTNode* parse_factor(TokenNode** current);
-
 void constant_folding(ASTNode* node);
 
 ASTNode* dead_code_elim(ASTNode* node);
