@@ -31,6 +31,4 @@ identifier ::= [a-zA-Z][a-zA-Z0-9]\*
 
 
 ## Future Additions
-I plan to add features for optimization and extra functionality. Optimizations include constant folding to reduce as many constants as possible, and dead code elimination to
-get rid of code that is impossible to run. These optimizations reduce the number of nodes in the Abstract Syntax Tree, and allow interpretation to happen faster. Features for
-extra functionality include implementing increment and decrement operators as well as function calls. These changes will allow the user to do more with the interpreter.
+There are many features that I plan to implement in the future for this interpreter. As of right now, if statements run on expressions that are evaluated as integers, and are true/false depending on whether the integer is zero or not. I plan to implement logical operators such as && and ||, as well as comparison operators such as <,>, or ==. I plan to add loops for repetitive statement execution which include for loops and while loops. Multiple types will also be introduced, so integers aren't the only type. Function calls are also a significant part of programming that isn't yet in my interpreter, so that will also be a feature to be implemented.
